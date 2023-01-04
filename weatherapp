@@ -1,0 +1,65 @@
+import requests
+
+def get_weather(location):
+    api_key = "YOUR_API_KEY_HERE"
+    api_url = f"https://api.openweathermap.org/data/2.5/weather?q={location}&units=imperial&appid={api_key}"
+    weather_data = requests.get(api_url).json()
+
+    temperature = weather_data["main"]["temp"]
+    conditions = weather_data["weather"][0]["description"]
+    return f"The temperature in {location} is {temperature} degrees Fahrenheit with {conditions}"
+
+print(get_weather("New York, NY"))
+
+
+
+
+
+
+//// UI
+
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton
+
+class WeatherApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+    
+    def initUI(self):
+        self.location_label = QLabel("Location:", self)
+        self.location_edit = QLineEdit(self)
+        self.location_edit.move(70, 0)
+        self.location_edit.resize(200, 30)
+        
+        self.get_weather_button = QPushButton("Get Weather", self)
+        self.get_weather_button.move(280, 0)
+        self.get_weather_button.resize(100, 30)
+        self.get_weather_button.clicked.connect(self.get_weather)
+        
+        self.temperature_label = QLabel("Temperature:", self)
+        self.temperature_label.move(0, 40)
+        
+        self.conditions_label = QLabel("Conditions:", self)
+        self.conditions_label.move(0, 80)
+        
+        self.setGeometry(300, 300, 400, 120)
+        self.setWindowTitle("Weather App")
+        self.show()
+    
+    def get_weather(self):
+        location = self.location_edit.text()
+        api_key = "YOUR_API_KEY_HERE"
+        api_url = f"https://api.openweathermap.org/data/2.5/weather?q={location}&units=imperial&appid={api_key}"
+        weather_data = requests.get(api_url).json()
+        
+        temperature = weather_data["main"]["temp"]
+        conditions = weather_data["weather"][0]["description"]
+        
+        self.temperature_label.setText(f"Temperature: {temperature} degrees Fahrenheit")
+        self.conditions_label.setText(f"Conditions: {conditions}")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    ex = WeatherApp()
+    sys.exit(app.exec_())
